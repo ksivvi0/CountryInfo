@@ -33,11 +33,15 @@ namespace CountryInfo
             this.CountryTextBox = new System.Windows.Forms.TextBox();
             this.SearchBtn = new System.Windows.Forms.Button();
             this.ShowAllBtn = new System.Windows.Forms.Button();
+            this.ResultsBox = new System.Windows.Forms.RichTextBox();
+            this.StatusBar = new System.Windows.Forms.StatusStrip();
             this.PanelLayout.SuspendLayout();
             this.SuspendLayout();
             // 
             // PanelLayout
             // 
+            this.PanelLayout.Controls.Add(this.StatusBar);
+            this.PanelLayout.Controls.Add(this.ResultsBox);
             this.PanelLayout.Controls.Add(this.ShowAllBtn);
             this.PanelLayout.Controls.Add(this.SearchBtn);
             this.PanelLayout.Controls.Add(this.CountryTextBox);
@@ -56,21 +60,40 @@ namespace CountryInfo
             // 
             // SearchBtn
             // 
-            this.SearchBtn.Location = new System.Drawing.Point(280, 4);
+            this.SearchBtn.Location = new System.Drawing.Point(280, 3);
             this.SearchBtn.Name = "SearchBtn";
             this.SearchBtn.Size = new System.Drawing.Size(100, 25);
             this.SearchBtn.TabIndex = 1;
             this.SearchBtn.Text = "Поиск";
             this.SearchBtn.UseVisualStyleBackColor = true;
+            this.SearchBtn.Click += new System.EventHandler(this.SearchBtn_Click);
             // 
             // ShowAllBtn
             // 
-            this.ShowAllBtn.Location = new System.Drawing.Point(386, 4);
+            this.ShowAllBtn.Location = new System.Drawing.Point(386, 3);
             this.ShowAllBtn.Name = "ShowAllBtn";
             this.ShowAllBtn.Size = new System.Drawing.Size(172, 25);
             this.ShowAllBtn.TabIndex = 2;
             this.ShowAllBtn.Text = "Показать все страны";
             this.ShowAllBtn.UseVisualStyleBackColor = true;
+            this.ShowAllBtn.Click += new System.EventHandler(this.ShowAllBtn_Click);
+            // 
+            // ResultsBox
+            // 
+            this.ResultsBox.Location = new System.Drawing.Point(5, 33);
+            this.ResultsBox.Name = "ResultsBox";
+            this.ResultsBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.ResultsBox.Size = new System.Drawing.Size(553, 381);
+            this.ResultsBox.TabIndex = 3;
+            this.ResultsBox.Text = "";
+            // 
+            // StatusBar
+            // 
+            this.StatusBar.Location = new System.Drawing.Point(0, 441);
+            this.StatusBar.Name = "StatusBar";
+            this.StatusBar.Size = new System.Drawing.Size(562, 22);
+            this.StatusBar.TabIndex = 4;
+            this.StatusBar.Text = "statusStrip1";
             // 
             // MainForm
             // 
@@ -84,6 +107,8 @@ namespace CountryInfo
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "CountryInfo";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.PanelLayout.ResumeLayout(false);
             this.PanelLayout.PerformLayout();
             this.ResumeLayout(false);
@@ -96,6 +121,8 @@ namespace CountryInfo
         private System.Windows.Forms.Button ShowAllBtn;
         private System.Windows.Forms.Button SearchBtn;
         private System.Windows.Forms.TextBox CountryTextBox;
+        private System.Windows.Forms.RichTextBox ResultsBox;
+        private System.Windows.Forms.StatusStrip StatusBar;
     }
 }
 

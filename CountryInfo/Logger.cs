@@ -7,16 +7,19 @@ using System.Threading.Tasks;
 
 namespace CountryInfo
 {
-    public class Logger
+    public class Logger: ILogger
     {
-        static string LogPath;
+        public string LogPath{ get; private set; }
 
-        static Logger()
+        public Logger(string path)
         {
-            LogPath = "country_info.log";
+            if (string.IsNullOrEmpty(path) || string.IsNullOrWhiteSpace(path))
+                throw new Exception("некорректный путь для журналирования");
+
+            LogPath = path;
         }
 
-        public static async void WriteLogAsync(string data)
+        public async void WriteLogAsync(string data)
         {
             using (StreamWriter writer = new StreamWriter(LogPath, true, Encoding.UTF8))
                 await writer.WriteLineAsync($"{DateTime.Now}:\t{data}");

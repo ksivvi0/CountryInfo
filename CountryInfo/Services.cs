@@ -13,6 +13,7 @@ namespace CountryInfo
 
     public interface ISearcher
     {
-        void a();
+        string Url{ get; set; }
+        void DoRequest(string data);
     }
 }

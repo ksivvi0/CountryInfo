@@ -12,26 +12,48 @@ namespace CountryInfo
 {
     public partial class MainForm : Form
     {
+        private ILogger logger;
+        private ISearcher searcher;
+
         public MainForm()
         {
             InitializeComponent();
         }
 
-        EventHandler<string> StatusBarUpdateText;
-        
-
         private void SearchBtn_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(CountryTextBox.Text) || string.IsNullOrWhiteSpace(CountryTextBox.Text))
+            try
             {
-                
+                if (CheckInputText(CountryTextBox.Text))
+                {
+                    try
+                    {
+                        searcher.DoRequest(CountryTextBox.Text.Trim());
+                    }
+                    catch(Exception reqErr)
+                    {
+                        logger.WriteLogAsync(reqErr.Message);
+                    }
+                }
             }
-                
+            catch (Exception ex)
+            {
+                logger.WriteLogAsync(ex.Message);
+                ShowError(ex.Message);
+            }
         }
 
         private void ShowAllBtn_Click(object sender, EventArgs e)
         {
-
+            try
+            {
+                searcher.DoRequest("ALL");
+            }
+            catch (Exception ex)
+            {
+                logger.WriteLogAsync(ex.Message);
+                ShowError(ex.Message);
+            }
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -42,14 +64,27 @@ namespace CountryInfo
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            ILogger logger = new Logger("country_info.log");
+            try
+            {
+                logger = new Logger("country_info.log");
 
-            ISearcher searcher = new Searcher("");
+                searcher = new Searcher("https://restcountries.eu/rest/v2");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
         }
 
-        private void SetText(string text)
+        private bool CheckInputText(string text)
         {
+            return !(string.IsNullOrEmpty(text) && string.IsNullOrWhiteSpace(text));
+        }
 
+        private void ShowError(string text)
+        {
+            MessageBox.Show(text);
         }
     }
 }

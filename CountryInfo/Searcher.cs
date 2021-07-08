@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading;
 
 namespace CountryInfo
 {
@@ -26,7 +27,6 @@ namespace CountryInfo
 
         private JsonSerializerOptions JsonOptions;
 
-        public event Action<CountryInfo[]> OnDataLoad;
         public event Action<string> OnError;
 
         public Searcher(string url)
@@ -38,29 +38,21 @@ namespace CountryInfo
             JsonOptions = new JsonSerializerOptions { IgnoreNullValues = true, PropertyNameCaseInsensitive = true, WriteIndented = true };
         }
 
-        public async void DoRequest(string countryName)
+        public async Task<CountryInfo[]> DoRequest(string countryName)
         {
-            try
+            using (HttpClient client = new HttpClient())
             {
-                using (HttpClient client = new HttpClient())
-                {
-                    string resp = null;
+                string response = null;
 
-                    if (countryName == "ALL")
-                        resp = await client.GetStringAsync($"{Url}/all");
-                    else
-                        resp = await client.GetStringAsync($"{Url}/name/{countryName}");
+                if (countryName == "ALL")
+                    response = await client.GetStringAsync($"{Url}/all");
+                else
+                    response = await client.GetStringAsync($"{Url}/name/{countryName}");
 
-                    var countries = JsonSerializer.Deserialize<CountryInfo[]>(resp, JsonOptions);
+                var countries = JsonSerializer.Deserialize<CountryInfo[]>(response, JsonOptions);
 
-                    OnDataLoad?.Invoke(countries);
-                }
+                return countries;
             }
-            catch (Exception ex)
-            {
-                OnError?.Invoke($"не удалось загрузить данные \n{ex.Message}");
-            }
-
         }
     }
 }

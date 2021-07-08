@@ -14,27 +14,20 @@ namespace CountryInfo
     {
         private ILogger logger;
         private ISearcher searcher;
-        public event EventHandler<CountryInfo[]> OnCountryLoaded;
 
         public MainForm()
         {
             InitializeComponent();
         }
 
-        private void SearchBtn_Click(object sender, EventArgs e)
+        private async void SearchBtn_Click(object sender, EventArgs e)
         {
             try
             {
                 if (CheckInputText(CountryTextBox.Text))
                 {
-                    try
-                    {
-                        searcher.DoRequest(CountryTextBox.Text.Trim());
-                    }
-                    catch(Exception reqErr)
-                    {
-                        logger.WriteLogAsync(reqErr.Message);
-                    }
+                    var country = await searcher.DoRequest(CountryTextBox.Text.Trim());
+                    UpdateResults(ref country);
                 }
             }
             catch (Exception ex)
@@ -44,11 +37,12 @@ namespace CountryInfo
             }
         }
 
-        private void ShowAllBtn_Click(object sender, EventArgs e)
+        private async void ShowAllBtn_Click(object sender, EventArgs e)
         {
             try
             {
-                searcher.DoRequest("ALL");
+                var countries = await searcher.DoRequest("ALL");
+                UpdateResults(ref countries);
             }
             catch (Exception ex)
             {
@@ -69,25 +63,13 @@ namespace CountryInfo
             {
                 logger = new Logger("country_info.log");
                 searcher = new Searcher("https://restcountries.eu/rest/v2");
-                searcher.OnDataLoad += Searcher_OnDataLoad;
-                searcher.OnError += Searcher_OnError;
+
+                searcher.OnError += ShowError;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
-        }
-
-        private void Searcher_OnError(string data)
-        {
-            StatusBar.ResetText();
-            StatusBar.Text = data;
-        }
-
-        private void Searcher_OnDataLoad(CountryInfo[] countries)
-        {
-            ResultsBox.Clear();
-            ResultsBox.Text = countries[0].Name;
         }
 
         private bool CheckInputText(string text)
@@ -97,7 +79,30 @@ namespace CountryInfo
 
         private void ShowError(string text)
         {
-            MessageBox.Show(text);
+            MessageBox.Show(text, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        private void UpdateResults(ref CountryInfo[] data)
+        {
+            try
+            {
+                if (data.Length > 0)
+                {
+                    ResultsGrid.DataSource = data;
+                    ExportBtn.Visible = true;
+                }
+                else
+                    ShowError("Нет данных");
+            }
+            catch (Exception ex)
+            {
+                logger.WriteLogAsync(ex.Message);
+            }
+        }
+
+        private void ExportBtn_Click(object sender, EventArgs e)
+        {
+            throw new Exception("обработчика пока нет...");
         }
     }
 }

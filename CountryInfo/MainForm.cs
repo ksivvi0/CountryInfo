@@ -14,6 +14,7 @@ namespace CountryInfo
     {
         private ILogger logger;
         private ISearcher searcher;
+        private IStore store;
 
         public MainForm()
         {
@@ -63,13 +64,20 @@ namespace CountryInfo
             {
                 logger = new Logger("country_info.log");
                 searcher = new Searcher("https://restcountries.eu/rest/v2");
+                store = new Store("test");
 
                 searcher.OnError += ShowError;
+                store.SQLResult += Store_SQLResult;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void Store_SQLResult(Dictionary<string, bool> obj)
+        {
+            throw new NotImplementedException();
         }
 
         private bool CheckInputText(string text)

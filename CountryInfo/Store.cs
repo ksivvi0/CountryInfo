@@ -11,7 +11,7 @@ namespace CountryInfo
     {
         public string Database { get; set; }
         public SqlConnection Connection { get; set; }
-        public event EventHandler<Dictionary<string, bool>> SQLResult;
+        public event Action<Dictionary<string, bool>> SQLResult;
 
         public Store(string connectionString)
         {

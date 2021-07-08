@@ -24,7 +24,7 @@ namespace CountryInfo
         string Database { get; set; }
         SqlConnection Connection{ get; set; }
 
-        event EventHandler<Dictionary<string, bool>> SQLResult;
+        event Action<Dictionary<string, bool>> SQLResult;
         void DoQuery(CountryInfo[] data);
     }
 }

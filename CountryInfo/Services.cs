@@ -17,4 +17,9 @@ namespace CountryInfo
         event Action<string> OnError;
         Task<CountryInfo[]> DoRequest(string data);
     }
+
+    public interface IStore
+    {
+        string Database { get; set; }
+    }
 }

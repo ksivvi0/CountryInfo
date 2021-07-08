@@ -14,6 +14,7 @@ namespace CountryInfo
     {
         private ILogger logger;
         private ISearcher searcher;
+        public event EventHandler<CountryInfo[]> OnCountryLoaded;
 
         public MainForm()
         {
@@ -67,14 +68,26 @@ namespace CountryInfo
             try
             {
                 logger = new Logger("country_info.log");
-
                 searcher = new Searcher("https://restcountries.eu/rest/v2");
+                searcher.OnDataLoad += Searcher_OnDataLoad;
+                searcher.OnError += Searcher_OnError;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
+        }
 
+        private void Searcher_OnError(string data)
+        {
+            StatusBar.ResetText();
+            StatusBar.Text = data;
+        }
+
+        private void Searcher_OnDataLoad(CountryInfo[] countries)
+        {
+            ResultsBox.Clear();
+            ResultsBox.Text = countries[0].Name;
         }
 
         private bool CheckInputText(string text)

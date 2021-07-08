@@ -15,8 +15,8 @@ namespace CountryInfo
         public string NumericCode { get; set; }
         public string Capital { get; set; }
 
-        public double Area { get; set; }
-        public long Population { get; set; }
+        public double? Area { get; set; }
+        public long? Population { get; set; }
         public string Region { get; set; }
     }
 
@@ -25,6 +25,9 @@ namespace CountryInfo
         public string Url { get; set; }
 
         private JsonSerializerOptions JsonOptions;
+
+        public event Action<CountryInfo[]> OnDataLoad;
+        public event Action<string> OnError;
 
         public Searcher(string url)
         {
@@ -41,23 +44,21 @@ namespace CountryInfo
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    if (countryName == "ALL")
-                    {
-                        Console.WriteLine($"{Url}/all");
-                        var resp = await client.GetStringAsync($"{Url}/all");
+                    string resp = null;
 
-                        var countries = JsonSerializer.Deserialize<CountryInfo[]>(resp, JsonOptions);
-                        foreach (var c in countries)
-                        {
-                            Console.WriteLine(c.Name);
-                        }
-                        return;
-                    }
+                    if (countryName == "ALL")
+                        resp = await client.GetStringAsync($"{Url}/all");
+                    else
+                        resp = await client.GetStringAsync($"{Url}/name/{countryName}");
+
+                    var countries = JsonSerializer.Deserialize<CountryInfo[]>(resp, JsonOptions);
+
+                    OnDataLoad?.Invoke(countries);
                 }
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                OnError?.Invoke($"не удалось загрузить данные \n{ex.Message}");
             }
 
         }

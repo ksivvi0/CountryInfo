@@ -13,7 +13,9 @@ namespace CountryInfo
 
     public interface ISearcher
     {
-        string Url{ get; set; }
+        string Url { get; set; }
+        event Action<CountryInfo[]> OnDataLoad;
+        event Action<string> OnError;
         void DoRequest(string data);
     }
 }

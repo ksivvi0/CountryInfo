@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data.SqlClient;
 
 namespace CountryInfo
 {
@@ -21,5 +22,6 @@ namespace CountryInfo
     public interface IStore
     {
         string Database { get; set; }
+        SqlConnection Connection{ get; set; }
     }
 }

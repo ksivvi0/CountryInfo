@@ -120,6 +120,10 @@ namespace CountryInfo
             try
             {
                 var result = await store.AddCountry(CurrentFoundCountry);
+                if (result)
+                    MessageBox.Show("Успешно");
+                else
+                    MessageBox.Show("Не удалось экспортировать данные");
             }
             catch(Exception ex)
             {

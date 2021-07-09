@@ -11,3 +11,4 @@
 	"Database": "Country"
 }
 ```
+config.json должен лежать рядом с .exe

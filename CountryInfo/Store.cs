@@ -40,6 +40,8 @@ namespace CountryInfo
 
                 var reader = await command.ExecuteNonQueryAsync();
                 var output = Convert.ToBoolean(command.Parameters["result"].Value);
+
+                Connection.Close();
                 return output;
             }
         }

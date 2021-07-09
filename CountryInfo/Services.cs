@@ -25,6 +25,6 @@ namespace CountryInfo
         SqlConnection Connection{ get; set; }
 
         event Action<Dictionary<string, bool>> SQLResult;
-        void DoQuery(CountryInfo[] data);
+        Task<bool> AddCountry(CountryInfo data);
     }
 }

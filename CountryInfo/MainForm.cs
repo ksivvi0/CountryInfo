@@ -18,6 +18,7 @@ namespace CountryInfo
         private ISearcher searcher;
         private IStore store;
         private Config config;
+        private CountryInfo CurrentFoundCountry;
 
         public MainForm()
         {
@@ -32,7 +33,6 @@ namespace CountryInfo
                 {
                     var country = await searcher.DoRequest(CountryTextBox.Text.Trim());
                     UpdateResults(ref country);
-                    ExportBtn.Visible = true;
                 }
             }
             catch (Exception ex)
@@ -74,17 +74,11 @@ namespace CountryInfo
                 store = new Store($"UID={config.Username};Password={config.Passwd};Server={config.ServerName};Database={config.Database}");
 
                 searcher.OnError += ShowError;
-                store.SQLResult += Store_SQLResult;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
-        }
-
-        private void Store_SQLResult(Dictionary<string, bool> obj)
-        {
-            throw new NotImplementedException();
         }
 
         private bool CheckInputText(string text)
@@ -94,6 +88,7 @@ namespace CountryInfo
 
         private void ShowError(string text)
         {
+            logger.WriteLogAsync(text);
             MessageBox.Show(text, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
@@ -102,19 +97,34 @@ namespace CountryInfo
             try
             {
                 if (data.Length > 0)
+                {
                     ResultsGrid.DataSource = data;
+                    if (data.Length == 1)
+                    {
+                        CurrentFoundCountry = data[0];
+                        ExportBtn.Visible = true;
+                    }
+                }
+
                 else
                     ShowError("Нет данных");
             }
             catch (Exception ex)
             {
-                logger.WriteLogAsync(ex.Message);
+                ShowError(ex.Message);
             }
         }
 
-        private void ExportBtn_Click(object sender, EventArgs e)
+        private async void ExportBtn_Click(object sender, EventArgs e)
         {
-            throw new Exception("обработчика пока нет...");
+            try
+            {
+                var result = await store.AddCountry(CurrentFoundCountry);
+            }
+            catch(Exception ex)
+            {
+                ShowError(ex.Message);
+            }
         }
 
         private async Task<Config> CreateNewConfig(string path)

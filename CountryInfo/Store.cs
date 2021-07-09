@@ -18,34 +18,29 @@ namespace CountryInfo
             Connection = new SqlConnection(connectionString);
         }
 
-        public async void DoQuery(CountryInfo[] data)
+        public async Task<bool> AddCountry(CountryInfo data)
         {
-            using (SqlCommand command = new SqlCommand("cmd", Connection))
+            using (SqlCommand command = new SqlCommand("dbo.addCountry", Connection))
             {
                 command.CommandTimeout = 7;
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+
                 await Connection.OpenAsync();
 
-                foreach (var country in data)
-                {
-                    command.Parameters.Add("cityName", country.Capital);
-                    command.Parameters.Add("regName", country.Region);
-                    command.Parameters.Add("name", country.Name);
-                    command.Parameters.Add("area", country.Area);
-                    command.Parameters.Add("code", country.NumericCode);
+                var result = new SqlParameter("result", System.Data.SqlDbType.Bit);
+                result.Direction = System.Data.ParameterDirection.ReturnValue;
 
-                    var reader = await command.ExecuteReaderAsync();
-                    if (reader.HasRows)
-                    {
-                        while (await reader.ReadAsync())
-                        {
-                            var result = reader.GetBoolean(0);
-                            var response = new Dictionary<string, bool>(1);
-                            response.Add(country.Name, result);
+                command.Parameters.Add("cityName", data.Capital);
+                command.Parameters.Add("regName", data.Region);
+                command.Parameters.Add("name", data.Name);
+                command.Parameters.Add("area", data.Area);
+                command.Parameters.Add("code", data.NumericCode);
 
-                            SQLResult?.Invoke(response);
-                        }
-                    }
-                }
+                command.Parameters.Add(result);
+
+                var reader = await command.ExecuteNonQueryAsync();
+
+                return (bool)command.Parameters["result"].Value;
             }
         }
     }

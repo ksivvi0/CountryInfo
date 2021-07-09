@@ -3,8 +3,8 @@
 
 Поиск страны по имени или вывод всего списка стран.
 
-`{
-	"Username": "sa",
-	"Passwd": "1qaz@WSX",
+```{
+	"Username": "sa",`
+   "Passwd": "1qaz@WSX",
 	"ServerName": "localhost"
-}`
+}```

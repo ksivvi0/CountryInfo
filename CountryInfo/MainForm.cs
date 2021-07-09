@@ -32,6 +32,7 @@ namespace CountryInfo
                 {
                     var country = await searcher.DoRequest(CountryTextBox.Text.Trim());
                     UpdateResults(ref country);
+                    ExportBtn.Visible = true;
                 }
             }
             catch (Exception ex)
@@ -45,6 +46,7 @@ namespace CountryInfo
         {
             try
             {
+                ExportBtn.Visible = false;
                 var countries = await searcher.DoRequest("ALL");
                 UpdateResults(ref countries);
             }
@@ -69,7 +71,7 @@ namespace CountryInfo
                 logger = new Logger("country_info.log");
 
                 searcher = new Searcher("https://restcountries.eu/rest/v2");
-                store = new Store($"UID={config.Username};Password={config.Passwd};Server={config.ServerName}");
+                store = new Store($"UID={config.Username};Password={config.Passwd};Server={config.ServerName};Database={config.Database}");
 
                 searcher.OnError += ShowError;
                 store.SQLResult += Store_SQLResult;
@@ -100,10 +102,7 @@ namespace CountryInfo
             try
             {
                 if (data.Length > 0)
-                {
                     ResultsGrid.DataSource = data;
-                    ExportBtn.Visible = true;
-                }
                 else
                     ShowError("Нет данных");
             }

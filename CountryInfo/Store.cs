@@ -27,10 +27,12 @@ namespace CountryInfo
 
                 foreach (var country in data)
                 {
-                    command.Parameters.Add("1", country.Name);
-                    command.Parameters.Add("1", country.Name);
-                    command.Parameters.Add("1", country.Name);
-                    command.Parameters.Add("1", country.Name);
+                    command.Parameters.Add("cityName", country.Capital);
+                    command.Parameters.Add("regName", country.Region);
+                    command.Parameters.Add("name", country.Name);
+                    command.Parameters.Add("area", country.Area);
+                    command.Parameters.Add("code", country.NumericCode);
+
                     var reader = await command.ExecuteReaderAsync();
                     if (reader.HasRows)
                     {

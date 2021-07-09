@@ -5,8 +5,9 @@
 
 ```
 {
-	"Username": "sa",`
-   "Passwd": "1qaz@WSX",
-	"ServerName": "localhost"
+	"Username": "sa",
+	"Passwd": "1qaz@WSX",
+	"ServerName": "localhost",
+	"Database": "Country"
 }
 ```

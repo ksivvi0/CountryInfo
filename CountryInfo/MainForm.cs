@@ -14,6 +14,7 @@ namespace CountryInfo
 {
     public partial class MainForm : Form
     {
+        //TODO: покрыть тестами...
         private ILogger logger;
         private ISearcher searcher;
         private IStore store;

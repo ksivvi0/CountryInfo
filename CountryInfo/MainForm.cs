@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -15,6 +17,7 @@ namespace CountryInfo
         private ILogger logger;
         private ISearcher searcher;
         private IStore store;
+        private Config config;
 
         public MainForm()
         {
@@ -58,13 +61,15 @@ namespace CountryInfo
                 e.Cancel = true;
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
+        private async void MainForm_Load(object sender, EventArgs e)
         {
             try
             {
+                config = await CreateNewConfig("config.json");
                 logger = new Logger("country_info.log");
+
                 searcher = new Searcher("https://restcountries.eu/rest/v2");
-                store = new Store("test");
+                store = new Store($"UID={config.Username};Password={config.Passwd};Server={config.ServerName}");
 
                 searcher.OnError += ShowError;
                 store.SQLResult += Store_SQLResult;
@@ -111,6 +116,17 @@ namespace CountryInfo
         private void ExportBtn_Click(object sender, EventArgs e)
         {
             throw new Exception("обработчика пока нет...");
+        }
+
+        private async Task<Config> CreateNewConfig(string path)
+        {
+            if (!File.Exists(path))
+                throw new Exception("некорректный файл конфигурации");
+            using (var file = File.OpenRead(path))
+            {
+                var cfg = await JsonSerializer.DeserializeAsync<Config>(file);
+                return cfg;
+            }
         }
     }
 }

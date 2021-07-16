@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -38,8 +39,7 @@ namespace CountryInfo
             }
             catch (Exception ex)
             {
-                logger.WriteLogAsync(ex.Message);
-                ShowError(ex.Message);
+                ProcessException(ex);
             }
         }
 
@@ -53,8 +53,7 @@ namespace CountryInfo
             }
             catch (Exception ex)
             {
-                logger.WriteLogAsync(ex.Message);
-                ShowError(ex.Message);
+                ProcessException(ex);
             }
         }
 
@@ -69,6 +68,9 @@ namespace CountryInfo
             try
             {
                 config = await CreateNewConfig("config.json");
+                if (config == null)
+                    ShowError("Не удалось загрузить файл конфигурации");
+
                 logger = new Logger("country_info.log");
 
                 searcher = new Searcher("https://restcountries.eu/rest/v2");
@@ -78,7 +80,7 @@ namespace CountryInfo
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                ProcessException(ex);
             }
         }
 
@@ -89,18 +91,22 @@ namespace CountryInfo
 
         private void ShowError(string text)
         {
-            logger.WriteLogAsync(text);
-            MessageBox.Show(text, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            try
+            {
+                logger.WriteLogAsync(text);
+                MessageBox.Show(text, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch { }
         }
 
-        private void UpdateResults(ref CountryInfo[] data)
+        private void UpdateResults(ref List<CountryInfo> data)
         {
             try
             {
-                if (data.Length > 0)
+                if (data.Count > 0)
                 {
                     ResultsGrid.DataSource = data;
-                    if (data.Length == 1)
+                    if (data.Count == 1)
                     {
                         CurrentFoundCountry = data[0];
                         ExportBtn.Visible = true;
@@ -112,7 +118,7 @@ namespace CountryInfo
             }
             catch (Exception ex)
             {
-                ShowError(ex.Message);
+                ProcessException(ex);
             }
         }
 
@@ -121,6 +127,7 @@ namespace CountryInfo
             try
             {
                 var result = await store.AddCountry(CurrentFoundCountry);
+
                 if (result)
                     MessageBox.Show("Успешно");
                 else
@@ -128,19 +135,54 @@ namespace CountryInfo
             }
             catch(Exception ex)
             {
-                ShowError(ex.Message);
+                ProcessException(ex);
             }
         }
 
         private async Task<Config> CreateNewConfig(string path)
         {
-            if (!File.Exists(path))
-                throw new Exception("некорректный файл конфигурации");
-            using (var file = File.OpenRead(path))
+            try
             {
-                var cfg = await JsonSerializer.DeserializeAsync<Config>(file);
-                return cfg;
+                if (!File.Exists(path))
+                    throw new Exception("некорректный файл конфигурации");
+
+                using (var file = File.OpenRead(path))
+                {
+                    var cfg = await JsonSerializer.DeserializeAsync<Config>(file);
+                    return cfg;
+                }
             }
+            catch (Exception ex)
+            {
+                ProcessException(ex);
+                return null;
+            }
+        }
+
+        private async void ImportFromSqlBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var countries = await store.ShowCountriesFromDB();
+                UpdateResults(ref countries);
+            }
+            catch (Exception ex)
+            {
+                ProcessException(ex);
+            }
+        }
+
+        private void ProcessException(Exception ex)
+        {
+            string msgText = "";
+
+            if (ex.InnerException != null)
+                msgText += ex.InnerException.Message + "\n";
+
+            msgText += ex.Message;
+
+            logger.WriteLogAsync(msgText);
+            ShowError(msgText);
         }
     }
 }

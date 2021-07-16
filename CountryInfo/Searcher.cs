@@ -38,18 +38,15 @@ namespace CountryInfo
             JsonOptions = new JsonSerializerOptions { IgnoreNullValues = true, PropertyNameCaseInsensitive = true, WriteIndented = true };
         }
 
-        public async Task<CountryInfo[]> DoRequest(string countryName)
+        public async Task<List<CountryInfo>> DoRequest(string countryName)
         {
             using (HttpClient client = new HttpClient())
             {
                 string response = null;
 
-                if (countryName == "ALL")
-                    response = await client.GetStringAsync($"{Url}/all");
-                else
-                    response = await client.GetStringAsync($"{Url}/name/{countryName}");
+                response = await client.GetStringAsync($"{Url}/name/{countryName}");
 
-                var countries = JsonSerializer.Deserialize<CountryInfo[]>(response, JsonOptions);
+                var countries = JsonSerializer.Deserialize<List<CountryInfo>>(response, JsonOptions);
 
                 return countries;
             }

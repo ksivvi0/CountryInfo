@@ -16,7 +16,7 @@ namespace CountryInfo
     {
         string Url { get; set; }
         event Action<string> OnError;
-        Task<CountryInfo[]> DoRequest(string data);
+        Task<List<CountryInfo>> DoRequest(string data);
     }
 
     public interface IStore
@@ -26,5 +26,6 @@ namespace CountryInfo
 
         event Action<Dictionary<string, bool>> SQLResult;
         Task<bool> AddCountry(CountryInfo data);
+        Task<List<CountryInfo>> ShowCountriesFromDB();
     }
 }

@@ -32,10 +32,10 @@ namespace CountryInfo
             this.PanelLayout = new System.Windows.Forms.Panel();
             this.ResultsGrid = new System.Windows.Forms.DataGridView();
             this.TopPanel = new System.Windows.Forms.Panel();
-            this.SearchBtn = new System.Windows.Forms.Button();
             this.CountryTextBox = new System.Windows.Forms.TextBox();
-            this.ShowAllBtn = new System.Windows.Forms.Button();
+            this.SearchBtn = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.ImportFromSqlBtn = new System.Windows.Forms.Button();
             this.ExportBtn = new System.Windows.Forms.Button();
             this.PanelLayout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ResultsGrid)).BeginInit();
@@ -65,53 +65,53 @@ namespace CountryInfo
             // 
             // TopPanel
             // 
-            this.TopPanel.Controls.Add(this.SearchBtn);
             this.TopPanel.Controls.Add(this.CountryTextBox);
-            this.TopPanel.Controls.Add(this.ShowAllBtn);
+            this.TopPanel.Controls.Add(this.SearchBtn);
             this.TopPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.TopPanel.Location = new System.Drawing.Point(0, 0);
             this.TopPanel.Name = "TopPanel";
             this.TopPanel.Size = new System.Drawing.Size(562, 32);
             this.TopPanel.TabIndex = 2;
             // 
+            // CountryTextBox
+            // 
+            this.CountryTextBox.Location = new System.Drawing.Point(3, 4);
+            this.CountryTextBox.Name = "CountryTextBox";
+            this.CountryTextBox.Size = new System.Drawing.Size(460, 23);
+            this.CountryTextBox.TabIndex = 10;
+            this.CountryTextBox.Tag = "0";
+            // 
             // SearchBtn
             // 
             this.SearchBtn.Dock = System.Windows.Forms.DockStyle.Right;
-            this.SearchBtn.Location = new System.Drawing.Point(292, 0);
+            this.SearchBtn.Location = new System.Drawing.Point(464, 0);
             this.SearchBtn.Name = "SearchBtn";
             this.SearchBtn.Size = new System.Drawing.Size(98, 32);
-            this.SearchBtn.TabIndex = 8;
+            this.SearchBtn.TabIndex = 9;
             this.SearchBtn.Text = "Поиск";
             this.SearchBtn.UseVisualStyleBackColor = true;
             this.SearchBtn.Click += new System.EventHandler(this.SearchBtn_Click);
             // 
-            // CountryTextBox
-            // 
-            this.CountryTextBox.Location = new System.Drawing.Point(4, 4);
-            this.CountryTextBox.Name = "CountryTextBox";
-            this.CountryTextBox.Size = new System.Drawing.Size(286, 23);
-            this.CountryTextBox.TabIndex = 7;
-            this.CountryTextBox.Tag = "0";
-            // 
-            // ShowAllBtn
-            // 
-            this.ShowAllBtn.Dock = System.Windows.Forms.DockStyle.Right;
-            this.ShowAllBtn.Location = new System.Drawing.Point(390, 0);
-            this.ShowAllBtn.Name = "ShowAllBtn";
-            this.ShowAllBtn.Size = new System.Drawing.Size(172, 32);
-            this.ShowAllBtn.TabIndex = 6;
-            this.ShowAllBtn.Text = "Показать все страны";
-            this.ShowAllBtn.UseVisualStyleBackColor = true;
-            this.ShowAllBtn.Click += new System.EventHandler(this.ShowAllBtn_Click);
-            // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.ImportFromSqlBtn);
             this.panel1.Controls.Add(this.ExportBtn);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel1.Location = new System.Drawing.Point(0, 430);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(562, 33);
             this.panel1.TabIndex = 1;
+            // 
+            // ImportFromSqlBtn
+            // 
+            this.ImportFromSqlBtn.Dock = System.Windows.Forms.DockStyle.Right;
+            this.ImportFromSqlBtn.Location = new System.Drawing.Point(238, 0);
+            this.ImportFromSqlBtn.Name = "ImportFromSqlBtn";
+            this.ImportFromSqlBtn.Size = new System.Drawing.Size(162, 33);
+            this.ImportFromSqlBtn.TabIndex = 10;
+            this.ImportFromSqlBtn.Text = "Импорт из SQL";
+            this.ImportFromSqlBtn.UseVisualStyleBackColor = true;
+            this.ImportFromSqlBtn.Click += new System.EventHandler(this.ImportFromSqlBtn_Click);
             // 
             // ExportBtn
             // 
@@ -155,9 +155,9 @@ namespace CountryInfo
         private System.Windows.Forms.Button ExportBtn;
         private System.Windows.Forms.DataGridView ResultsGrid;
         private System.Windows.Forms.Panel TopPanel;
-        private System.Windows.Forms.Button SearchBtn;
         private System.Windows.Forms.TextBox CountryTextBox;
-        private System.Windows.Forms.Button ShowAllBtn;
+        private System.Windows.Forms.Button SearchBtn;
+        private System.Windows.Forms.Button ImportFromSqlBtn;
     }
 }
 
